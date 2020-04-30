@@ -19,6 +19,7 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
+    @RequestMapping("admin_category_list")
     public String list(Model model){
         List<Category> cs = categoryService.list();
         model.addAttribute("cs", cs);
