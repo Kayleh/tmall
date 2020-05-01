@@ -25,10 +25,12 @@
         	//返回指定id的value值
             var value = $("#" + id).val();
 			if (value.length == 0) {
+			    //空
 				alert(name + "不能为空");
 				$("#" + id)[0].focus();
 				return false;
 			}
+			//非空true
 			return true;
         }
 
