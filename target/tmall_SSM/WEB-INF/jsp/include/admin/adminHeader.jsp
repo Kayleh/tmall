@@ -20,6 +20,7 @@
     <link href="css/back/style.css" rel="stylesheet">
 
     <script>
+        //为空判断
         function checkEmpty(id, name) {
         	//返回指定id的value值
             var value = $("#" + id).val();
@@ -63,7 +64,7 @@
             return true;
         }
 
-
+        //监听删除操作
         $(function () {
             $("a").click(function () {
                 var deleteLink = $(this).attr("deleteLink");

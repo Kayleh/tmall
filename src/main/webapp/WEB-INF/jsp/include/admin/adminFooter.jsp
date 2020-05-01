@@ -9,8 +9,8 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 
 
-<div class="footer">
-</div>
-©CopyRight Kayleh
+<div class="footer" style ="text-align: center">
+	©CopyRight Kayleh
+</div >
 </body>
 </html>
