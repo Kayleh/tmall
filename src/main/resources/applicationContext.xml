@@ -42,16 +42,18 @@
         <property name="typeAliasesPackage" value="com.kayleh.tmall.pojo"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
-<!--        &lt;!&ndash;分页插件 重构的时候用&ndash;&gt;-->
-<!--        <property name="plugins">-->
-<!--            <array>-->
-<!--                <bean class="com.github.pagehelper.PageInterceptor">-->
-<!--                    <property name="properties">-->
-<!--                        <value></value>-->
-<!--                    </property>-->
-<!--                </bean>-->
-<!--            </array>-->
-<!--        </property>-->
+        <!--分页插件 拦截器-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
 
     </bean>
     <!--mybatis的Mapper识别-->

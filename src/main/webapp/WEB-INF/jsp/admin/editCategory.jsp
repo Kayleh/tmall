@@ -28,7 +28,7 @@
     <div>
         <div class="panel-warning">编辑分类</div>
         <div class="panel-body">
-            <form method="post" id="editForm" action="/admin_category_update" enctype="multipart/form-data">
+            <form method="post" id="editForm" action="admin_category_update" enctype="multipart/form-data">
                 <table class="editTable">
                     <tr>
                         <td>分类名称</td>

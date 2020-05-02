@@ -1,23 +1,21 @@
 package com.kayleh.tmall.mapper;
 
 import com.kayleh.tmall.pojo.Category;
-import com.kayleh.tmall.util.Page;
-
+import com.kayleh.tmall.pojo.CategoryExample;
 import java.util.List;
 
-/**
- * @Author: Wizard
- * @Date: 2020/4/30 16:00
- */
 public interface CategoryMapper {
-    //分页查询
-    public List<Category> list(Page page);
-    //查询总数
-    public int total();
+    int deleteByPrimaryKey(Integer id);
 
-    public void add(Category category);
+    int insert(Category record);
 
-    public void delete(int id);
+    int insertSelective(Category record);
 
-    public Category get(int id);
+    List<Category> selectByExample(CategoryExample example);
+
+    Category selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Category record);
+
+    int updateByPrimaryKey(Category record);
 }

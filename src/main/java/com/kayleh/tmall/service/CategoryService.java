@@ -10,9 +10,11 @@ import java.util.List;
  * @Date: 2020/4/30 16:01
  */
 public interface CategoryService {
-    List<Category> list(Page page);
-    int total();
+//    List<Category> list(Page page);
+    List<Category> list();
+//    int total();
     void add(Category category);
     void delete(int id);
     Category get(int id);
+    void update(Category category);
 }
