@@ -50,6 +50,7 @@
                 <span aria-hidden="true">&rsaquo;</span>
             </a>
         </li>
+        <%--        param--%>
         <li <c:if test="${!page.hasNext}">class="disabled"</c:if>>
             <a href="?start=${page.last}${page.param}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
