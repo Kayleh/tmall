@@ -1,57 +1,58 @@
 package com.kayleh.tmall.service.impl;
 
-import com.kayleh.tmall.mapper.CategoryMapper;
+
 import com.kayleh.tmall.mapper.ProductMapper;
 import com.kayleh.tmall.pojo.Category;
 import com.kayleh.tmall.pojo.Product;
 import com.kayleh.tmall.pojo.ProductExample;
+import com.kayleh.tmall.pojo.ProductImage;
 import com.kayleh.tmall.service.CategoryService;
+import com.kayleh.tmall.service.ProductImageService;
 import com.kayleh.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-/**
- * @Author: Wizard
- * @Date: 2020/5/3 10:22
- */
 @Service
-public class ProductImpl implements ProductService {
-
+public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductMapper productMapper;
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    ProductImageService productImageService;
+
     @Override
-    public void add(Product product) {
-        productMapper.insert(product);
+    public void add(Product p) {
+        productMapper.insert(p);
     }
 
     @Override
     public void delete(int id) {
-productMapper.deleteByPrimaryKey(id);
+        productMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public void update(Product product) {
-productMapper.updateByPrimaryKeySelective(product);
+    public void update(Product p) {
+        productMapper.updateByPrimaryKeySelective(p);
     }
 
     @Override
     public Product get(int id) {
-        Product product = productMapper.selectByPrimaryKey(id);
-        setCategory(product);
-        return product;
+        Product p = productMapper.selectByPrimaryKey(id);
+        setFirstProductImage(p);
+        setCategory(p);
+        return p;
     }
 
-    public  void setCategory(List<Product> ps){
+    public void setCategory(List<Product> ps){
         for (Product p : ps)
             setCategory(p);
     }
     public void setCategory(Product p){
         int cid = p.getCid();
         Category c = categoryService.get(cid);
+        p.setCategory(c);
     }
 
     @Override
@@ -61,6 +62,23 @@ productMapper.updateByPrimaryKeySelective(product);
         example.setOrderByClause("id desc");
         List result = productMapper.selectByExample(example);
         setCategory(result);
+        setFirstProductImage(result);
         return result;
     }
+
+    @Override
+    public void setFirstProductImage(Product p) {
+        List<ProductImage> pis = productImageService.list(p.getId(), ProductImageService.type_single);
+        if (!pis.isEmpty()) {
+            ProductImage pi = pis.get(0);
+            p.setFirstProductImage(pi);
+        }
+    }
+
+    public void setFirstProductImage(List<Product> ps) {
+        for (Product p : ps) {
+            setFirstProductImage(p);
+        }
+    }
+
 }
