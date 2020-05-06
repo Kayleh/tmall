@@ -15,7 +15,9 @@ public interface OrderMapper {
 
     Order selectByPrimaryKey(Integer id);
 
+    //
     int updateByPrimaryKeySelective(Order record);
 
     int updateByPrimaryKey(Order record);
+
 }
