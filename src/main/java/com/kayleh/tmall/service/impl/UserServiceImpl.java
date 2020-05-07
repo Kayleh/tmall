@@ -17,6 +17,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
+
     @Override
     public void add(User user) {
         userMapper.insert(user);
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) {
-    userMapper.deleteByPrimaryKey(id);
+        userMapper.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -43,5 +44,28 @@ public class UserServiceImpl implements UserService {
         UserExample example = new UserExample();
         example.setOrderByClause("id desc");
         return userMapper.selectByExample(example);
+    }
+
+    //判断是否存在用户名
+    @Override
+    public boolean isExist(String name) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andNameEqualTo(name);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (!userList.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public User get(String name, String password) {
+        UserExample example = new UserExample();
+        example.createCriteria().andNameEqualTo(name).andPasswordEqualTo(password);
+        List<User> users = userMapper.selectByExample(example);
+        if (!users.isEmpty()) {
+            return users.get(0);
+        }
+        return null;
     }
 }
