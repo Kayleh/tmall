@@ -20,4 +20,8 @@ public interface OrderItemService {
     void fill(List<Order> orders);
 
     void fill(Order order);
+
+    //获取产品的销售量
+    int getSaleCount(int pid);
+
 }

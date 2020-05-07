@@ -6,9 +6,7 @@ import com.kayleh.tmall.pojo.Category;
 import com.kayleh.tmall.pojo.Product;
 import com.kayleh.tmall.pojo.ProductExample;
 import com.kayleh.tmall.pojo.ProductImage;
-import com.kayleh.tmall.service.CategoryService;
-import com.kayleh.tmall.service.ProductImageService;
-import com.kayleh.tmall.service.ProductService;
+import com.kayleh.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +21,10 @@ public class ProductServiceImpl implements ProductService {
     CategoryService categoryService;
     @Autowired
     ProductImageService productImageService;
+    @Autowired
+    OrderItemService orderItemService;
+    @Autowired
+    ReviewService reviewService;
 
     @Override
     public void add(Product p) {
@@ -99,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
         category.setProducts(productList);
     }
 
+
     //为多个分类填充推荐产品集合，即把分类下的产品集合，按照8个为一行，拆成多行，以利于后续页面上进行显示
     @Override
     public void fillByRow(List<Category> categories) {
@@ -123,5 +126,22 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Override
+    public void setSaleAndReviewNumber(Product product) {
+        //产品id
+        Integer id = product.getId();
+        int saleCount = orderItemService.getSaleCount(id);
+        product.setSaleCount(saleCount);
+        int count = reviewService.getCount(id);
+        product.setReviewCount(count);
+    }
 
+    @Override
+    public void setSaleAndReviewNumber(List<Product> productList) {
+
+        for (Product product : productList) {
+            setSaleAndReviewNumber(product);
+        }
+
+    }
 }

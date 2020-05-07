@@ -12,14 +12,17 @@ import java.util.List;
 public interface ProductService {
     void add(Product product);
     void delete(int id);
-    void update(Product p);
+    void update(Product product);
     Product get(int id);
     List list(int cid);
     void setFirstProductImage(Product product);
 
-    void fill(List<Category> cs);
+    void fill(List<Category> categoryList);
 
     void fill(Category category);
 
     void fillByRow(List<Category> categories);
+    //设置销量和评价数量
+    void setSaleAndReviewNumber(Product product);
+    void setSaleAndReviewNumber(List<Product> productList);
 }

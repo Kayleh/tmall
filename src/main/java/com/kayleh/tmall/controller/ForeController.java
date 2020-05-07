@@ -1,7 +1,6 @@
 package com.kayleh.tmall.controller;
 
-import com.kayleh.tmall.pojo.Category;
-import com.kayleh.tmall.pojo.User;
+import com.kayleh.tmall.pojo.*;
 import com.kayleh.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +34,8 @@ public class ForeController {
     OrderService orderService;
     @Autowired
     OrderItemService orderItemService;
+    @Autowired
+    ReviewService reviewService;
 
     @RequestMapping("forehome")
     public String home(Model model) {
@@ -101,6 +102,23 @@ public class ForeController {
     public String logout( HttpSession session) {
         session.removeAttribute("user");
         return "redirect:forehome";
+    }
+    @RequestMapping("foreproduct")
+    public String profuct(int pid,Model model){
+        Product product = productService.get(pid);
+        List<ProductImage> singeImage = productImageService.list(product.getId(), ProductImageService.type_single);
+        List<ProductImage> detailImage = productImageService.list(product.getId(), ProductImageService.type_detail);
+        product.setProductSingleImages(singeImage);
+        product.setProductDetailImages(detailImage);
+
+        List<PropertyValue> propertyValueList = propertyValueService.list(product.getId());
+        List<Review> reviewList = reviewService.list(product.getId());
+        productService.setSaleAndReviewNumber(product);
+        model.addAttribute("reviews", reviewList);
+        model.addAttribute("p",product);
+        model.addAttribute("pvs",propertyValueService);
+        return "force/product";
+
     }
 }
 

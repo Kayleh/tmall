@@ -1,10 +1,7 @@
 package com.kayleh.tmall.service.impl;
 
 import com.kayleh.tmall.mapper.OrderItemMapper;
-import com.kayleh.tmall.pojo.Order;
-import com.kayleh.tmall.pojo.OrderItem;
-import com.kayleh.tmall.pojo.OrderItemExample;
-import com.kayleh.tmall.pojo.Product;
+import com.kayleh.tmall.pojo.*;
 import com.kayleh.tmall.service.OrderItemService;
 import com.kayleh.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +76,24 @@ public class OrderItemServiceImpl implements OrderItemService {
         order.setTotalNumber(totalNumber);
 
 
+    }
+
+    /**
+     * 销售量
+     * @param pid
+     * @return
+     */
+    @Override
+    public int getSaleCount(int pid) {
+        OrderItemExample orderExample = new OrderItemExample();
+        orderExample.createCriteria().andPidEqualTo(pid);
+        //根据产品id查询订单项
+        List<OrderItem> orderItems = orderItemMapper.selectByExample(orderExample);
+        int result = 0;
+        for (OrderItem orderItem : orderItems) {
+            result += orderItem.getNumber();
+        }
+        return result;
     }
 
     public void setProduct(List<OrderItem> orderItems){
