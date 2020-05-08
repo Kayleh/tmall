@@ -31,7 +31,7 @@
                 num = 1;
             $(".productNumberSetting").val(num);
         });
-
+        // 添加到购物车
         $(".addCartLink").click(function () {
             var page = "forecheckLogin";
             $.get(
@@ -64,13 +64,17 @@
             );
             return false;
         });
+        // 购买
         $(".buyLink").click(function () {
+            // 访问  检查登录
             var page = "forecheckLogin";
             $.get(
                 page,
                 function (result) {
                     if ("success" == result) {
+                        //获取购买数量
                         var num = $(".productNumberSetting").val();
+                        //根据 地址携带购买数量 发送请求
                         location.href = $(".buyLink").attr("href") + "&num=" + num;
                     } else {
                         $("#loginModal").modal('show');
