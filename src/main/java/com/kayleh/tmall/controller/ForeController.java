@@ -1,5 +1,6 @@
 package com.kayleh.tmall.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.kayleh.tmall.comparator.*;
 import com.kayleh.tmall.pojo.*;
 import com.kayleh.tmall.service.*;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.List;
@@ -179,6 +181,49 @@ public class ForeController {
         }
         model.addAttribute("c", category);
         return "fore/category";
+    }
+
+    @RequestMapping("foresearch")
+    public String search(String keyword, Model model) {
+        PageHelper.offsetPage(0, 20);
+        List<Product> productList = productService.search(keyword);
+        productService.setSaleAndReviewNumber(productList);
+
+        model.addAttribute("ps", productList);
+        return "fore/searchResult";
+    }
+
+    @RequestMapping("forebuyone")
+    public String buyone(int pid, int num, HttpSession session) {
+        //获取产品
+        Product product = productService.get(pid);
+        //订单号
+        int oiid = 0;
+        User user = (User) session.getAttribute("user");
+        boolean found = false;
+        List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
+        for (OrderItem orderItem : orderItems) {
+            //判断订单是否存在此产品
+            if (orderItem.getProduct().getId().intValue() == product.getId().intValue()) {
+                //订单项的此产品数量加一
+                orderItem.setNumber(orderItem.getNumber() + num);
+                //更新订单项！！
+                orderItemService.update(orderItem);
+                found = true;
+                oiid = orderItem.getId();
+                break;
+            }
+        }
+        if (!found){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setUid(user.getId());
+            orderItem.setNumber(num);
+            orderItem.setPid(pid);
+            //持久化操作
+            orderItemService.add(orderItem);
+            oiid=orderItem.getId();
+        }
+        return "redirect:forebuy?oiid="+oiid;
     }
 
 }

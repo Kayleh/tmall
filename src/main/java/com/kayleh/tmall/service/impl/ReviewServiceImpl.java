@@ -7,6 +7,7 @@ import com.kayleh.tmall.pojo.User;
 import com.kayleh.tmall.service.ReviewService;
 import com.kayleh.tmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @Author: Wizard
  * @Date: 2020/5/7 18:01
  */
+@Service
 public class ReviewServiceImpl implements ReviewService {
 
     @Autowired

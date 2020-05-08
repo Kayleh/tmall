@@ -16,7 +16,7 @@ public class PageController {
     }
     @RequestMapping("registerSuccessPage")
     public String registerSuccessPage() {
-        return "include/fore/registerSuccess";
+        return "fore/registerSuccess";
     }
     @RequestMapping("loginPage")
     public String loginPage() {

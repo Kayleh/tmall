@@ -1,6 +1,7 @@
 package com.kayleh.tmall.service;
 
 import com.kayleh.tmall.pojo.Order;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * @Author: Wizard
  * @Date: 2020/5/6 9:24
  */
+@Service
 public interface OrderService {
     String waitPay = "waitPay";//等待付款
     String waitDelivery = "waitDelivery";//等待发货

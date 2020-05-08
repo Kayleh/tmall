@@ -2,6 +2,7 @@ package com.kayleh.tmall.service;
 
 import com.kayleh.tmall.pojo.Order;
 import com.kayleh.tmall.pojo.OrderItem;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * @Author: Wizard
  * @Date: 2020/5/6 8:55
  */
+@Service
 public interface OrderItemService {
     void add(OrderItem orderItem);
 
@@ -24,4 +26,6 @@ public interface OrderItemService {
     //获取产品的销售量
     int getSaleCount(int pid);
 
+    //用户的订单项
+    List<OrderItem> listByUser(int uid);
 }

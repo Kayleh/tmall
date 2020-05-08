@@ -2,6 +2,7 @@ package com.kayleh.tmall.service;
 
 import com.kayleh.tmall.pojo.Category;
 import com.kayleh.tmall.pojo.Product;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * @Author: Wizard
  * @Date: 2020/5/3 10:20
  */
+@Service
 public interface ProductService {
     void add(Product product);
     void delete(int id);
@@ -25,4 +27,6 @@ public interface ProductService {
     //设置销量和评价数量
     void setSaleAndReviewNumber(Product product);
     void setSaleAndReviewNumber(List<Product> productList);
+
+    List<Product> search(String keyword);
 }

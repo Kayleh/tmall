@@ -1,6 +1,7 @@
 package com.kayleh.tmall.service;
 
 import com.kayleh.tmall.pojo.ProductImage;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * @Author: Wizard
  * @Date: 2020/5/4 17:23
  */
+@Service
 public interface ProductImageService {
     //单个图片
     String type_single = "type_single";
