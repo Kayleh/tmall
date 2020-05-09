@@ -124,8 +124,8 @@ public class ForeController {
         productService.setSaleAndReviewNumber(product);
         model.addAttribute("reviews", reviewList);
         model.addAttribute("p", product);
-        model.addAttribute("pvs", propertyValueService);
-        return "force/product";
+        model.addAttribute("pvs", propertyValueList);
+        return "fore/product";
     }
 
     // ajax阿贾克斯检查登录
@@ -224,7 +224,7 @@ public class ForeController {
             orderItemService.add(orderItem);
             oiid=orderItem.getId();
         }
-        return "redirect:forebuy?oiid="+oiid;
+        return "redirect:forebuy?oiids="+oiid;
     }
     @RequestMapping("forebuy")
     public String buy(HttpSession session,String[]oiids,Model model){
@@ -242,7 +242,7 @@ public class ForeController {
         //订单项集合保存到session域中
         session.setAttribute("ois", orderItemList);
         model.addAttribute("total",total);
-        return "force/buy";
+        return "fore/buy";
 
 
     }
