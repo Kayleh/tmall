@@ -227,13 +227,13 @@ public class ForeController {
     }
 
     @RequestMapping("forebuy")
-    public String buy(HttpSession session, String[] oiids, Model model) {
+    public String buy(HttpSession session, String[] oiid, Model model) {
 
         List<OrderItem> orderItemList = new ArrayList<>();
         float total = 0;
-        for (String oiid : oiids) {
+        for (String orderItemid : oiid) {
             //获取每个订单项 价格数量递增
-            int id = Integer.parseInt(oiid);
+            int id = Integer.parseInt(orderItemid);
             OrderItem orderItem = orderItemService.get(id);
             total += orderItem.getNumber() * orderItem.getProduct().getPromotePrice();
             //保存到订单项集合
@@ -255,7 +255,7 @@ public class ForeController {
         Product product = productService.get(pid);
         User user = (User) session.getAttribute("user");
         boolean found = false;
-        List<OrderItem> orderItemList = orderItemService.listByUser(product.getId());
+        List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
         for (OrderItem orderItem : orderItemList) {
             if (orderItem.getProduct().getId().intValue() == product.getId().intValue()) {
                 //如果订单项存在该产品
@@ -267,8 +267,9 @@ public class ForeController {
         }
         if (!found) {
             OrderItem orderItem = new OrderItem();
+            orderItem.setUid(user.getId());
             orderItem.setNumber(num);
-            orderItem.setUid(product.getId());
+
             orderItem.setPid(pid);
             orderItemService.add(orderItem);
         }
