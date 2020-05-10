@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.kayleh.tmall.comparator.*;
 import com.kayleh.tmall.pojo.*;
 import com.kayleh.tmall.service.*;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Author: Wizard
@@ -43,7 +42,7 @@ public class ForeController {
     @Autowired
     ReviewService reviewService;
 
-    @RequestMapping("forehome")
+    @RequestMapping(value = {"","forehome"})
     public String home(Model model) {
         //获取分类集合
         List<Category> categoryList = categoryService.list();
@@ -215,19 +214,20 @@ public class ForeController {
                 break;
             }
         }
-        if (!found){
+        if (!found) {
             OrderItem orderItem = new OrderItem();
             orderItem.setUid(user.getId());
             orderItem.setNumber(num);
             orderItem.setPid(pid);
             //持久化操作
             orderItemService.add(orderItem);
-            oiid=orderItem.getId();
+            oiid = orderItem.getId();
         }
-        return "redirect:forebuy?oiids="+oiid;
+        return "redirect:forebuy?oiids=" + oiid;
     }
+
     @RequestMapping("forebuy")
-    public String buy(HttpSession session,String[]oiids,Model model){
+    public String buy(HttpSession session, String[] oiids, Model model) {
 
         List<OrderItem> orderItemList = new ArrayList<>();
         float total = 0;
@@ -235,13 +235,13 @@ public class ForeController {
             //获取每个订单项 价格数量递增
             int id = Integer.parseInt(oiid);
             OrderItem orderItem = orderItemService.get(id);
-            total += orderItem.getNumber()*orderItem.getProduct().getPromotePrice();
+            total += orderItem.getNumber() * orderItem.getProduct().getPromotePrice();
             //保存到订单项集合
             orderItemList.add(orderItem);
         }
         //订单项集合保存到session域中
         session.setAttribute("ois", orderItemList);
-        model.addAttribute("total",total);
+        model.addAttribute("total", total);
         return "fore/buy";
 
 
@@ -250,40 +250,180 @@ public class ForeController {
 
     @RequestMapping("foreaddCart")
     @ResponseBody
-    public String addCart(int pid,int num,Model model,HttpSession session){
+    public String addCart(int pid, int num, Model model, HttpSession session) {
 
         Product product = productService.get(pid);
         User user = (User) session.getAttribute("user");
         boolean found = false;
         List<OrderItem> orderItemList = orderItemService.listByUser(product.getId());
         for (OrderItem orderItem : orderItemList) {
-            if (orderItem.getProduct().getId().intValue()==product.getId().intValue()){
+            if (orderItem.getProduct().getId().intValue() == product.getId().intValue()) {
                 //如果订单项存在该产品
-                orderItem.setNumber(orderItem.getNumber()+num);
+                orderItem.setNumber(orderItem.getNumber() + num);
                 orderItemService.update(orderItem);
                 found = true;
                 break;
             }
-        }if (!found){
+        }
+        if (!found) {
             OrderItem orderItem = new OrderItem();
             orderItem.setNumber(num);
             orderItem.setUid(product.getId());
             orderItem.setPid(pid);
             orderItemService.add(orderItem);
         }
-            return "success";
+        return "success";
 
     }
 
     @RequestMapping("forecart")
-    public String cart(Model model,HttpSession session){
+    public String cart(Model model, HttpSession session) {
 
         User user = (User) session.getAttribute("user");
         List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
-        model.addAttribute("ois",orderItemList);
+        model.addAttribute("ois", orderItemList);
         return "fore/cart";
 
     }
+
+    @RequestMapping("forechangeOrderItem")
+    public String changeOrderItem(Model model, HttpSession session, int pid, int number) {
+
+        User user = (User) session.getAttribute("user");
+        if (null == user) {
+            return "fail";
+        }
+        List<OrderItem> orderItemList = orderItemService.listByUser(user.getId());
+        for (OrderItem orderItem : orderItemList) {
+            if (orderItem.getProduct().getId().intValue() == pid) {
+                //根据传进来的number设置number的值
+                orderItem.setNumber(number);
+                orderItemService.update(orderItem);
+                break;
+            }
+        }
+        return "success";
+
+    }
+
+    @RequestMapping("foredeleteOrderItem")
+    public String deleteOrderItem(Model model, HttpSession session, int orderItemId) {
+
+        User user = (User) session.getAttribute("user");
+        if (null != user) {
+            return "fail";
+        }
+
+        orderItemService.delete(orderItemId);
+        return "success";
+
+    }
+
+
+    @RequestMapping("forecreateOrder")
+    public String createOrder(Model model,Order order,HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        //    订单扣
+        String orderCode=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date())+RandomUtils.nextInt(10000);
+        order.setCreateDate(new Date());
+        order.setOrderCode(orderCode);
+        //新创建的订单为等待付款
+        order.setStatus(OrderService.waitPay);
+        List<OrderItem> orderItemList = (List<OrderItem>) session.getAttribute("ois");
+
+        float total = orderService.add(order,orderItemList);
+
+        return "redirect:forealipay?oid="+order.getId() +"&total="+total;
+    }
+
+    @RequestMapping("forepayed")
+    public String payed(int oid,float total,Model model){
+
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date());
+        orderService.update(order);
+        model.addAttribute("o",order);
+        return "fore/payed";
+
+    }
+    @RequestMapping("forebought")
+    public String bought(HttpSession session,Model model){
+
+        User user = (User) session.getAttribute("user");
+
+        List<Order> orderList = orderService.list(user.getId(), OrderService.delete);
+        //填充订单
+        orderItemService.fill(orderList);
+
+        model.addAttribute("os",orderList);
+
+        return "fore/bought";
+    }
+    @RequestMapping("foreconfirmPay")
+    public String confirmPay(int oid,Model model){
+
+        Order order = orderService.get(oid);
+        orderItemService.fill(order);
+        model.addAttribute("o",order);
+        return "foce/comfirmPay";
+
+    }
+    @RequestMapping("foreorderConfirmed")
+    public String orderConfirmed(int oid,Model model){
+
+        Order order = orderService.get(oid);
+        //等待评价
+        order.setStatus(OrderService.waitReview);
+        //完成订单时间
+        order.setConfirmDate(new Date());
+        orderService.update(order);
+        return "fore/orderConfirmed";
+    }
+
+    @RequestMapping("foredeleteOrder")
+    @ResponseBody
+    public String deleteOrder(Model model,int oid){
+
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.delete);
+        orderService.update(order);
+        return "success";
+    }
+    @RequestMapping("forereview")
+    public String review(int oid,Model model){
+
+//        Order order = orderService.get(oid);
+//
+//        orderItemService.fill(order);
+//
+//        Product product = order.getOrderItems().get(0).getProduct();
+//
+//        List<Review> review = reviewService.list(product.getId());
+//
+//        model.addAttribute("p",product);
+//
+//        model.addAttribute("o",order);
+//
+//        model.addAttribute("review",review);
+//
+//        return "fore/review";
+
+        orderItemService.fill(orderService.get(oid));
+
+        model.addAttribute("p", orderService.get(oid).getOrderItems().get(0).getProduct());
+
+        model.addAttribute("o", orderService.get(oid));
+
+        model.addAttribute("review", reviewService.list(orderService.get(oid).getOrderItems().get(0).getProduct().getId()));
+
+        return "fore/review";
+
+
+    }
+
+
 
 }
 

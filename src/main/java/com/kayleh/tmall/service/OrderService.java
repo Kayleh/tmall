@@ -1,6 +1,7 @@
 package com.kayleh.tmall.service;
 
 import com.kayleh.tmall.pojo.Order;
+import com.kayleh.tmall.pojo.OrderItem;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,4 +24,8 @@ public interface OrderService {
     void update(Order order);
     Order get(int id);
     List list();
+
+    float add(Order order,List<OrderItem> orderItems);
+
+    List list(int uid, String excludedStatus);
 }
