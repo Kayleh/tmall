@@ -16,8 +16,8 @@ public interface OrderService {
     String waitDelivery = "waitDelivery";//等待发货
     String waitConfirm = "waitConfirm";//等待确认
     String waitReview = "waitReview";//等待评论
-    String finish = "finish";
-    String delete = "delete";
+    String finish = "finish";//订单完成
+    String delete = "delete";//订单删除
     void add(Order order);
 
     void delete(int id);

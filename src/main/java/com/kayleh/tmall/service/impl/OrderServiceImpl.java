@@ -98,7 +98,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List list(int uid, String excludedStatus) {
         OrderExample orderExample = new OrderExample();
-        orderExample.createCriteria().andStatusEqualTo(excludedStatus);
+        //排除
+        orderExample.createCriteria().andStatusNotEqualTo(excludedStatus);
         orderExample.setOrderByClause("id desc");
         return orderMapper.selectByExample(orderExample);
     }

@@ -223,7 +223,7 @@ public class ForeController {
             orderItemService.add(orderItem);
             oiid = orderItem.getId();
         }
-        return "redirect:forebuy?oiids=" + oiid;
+        return "redirect:forebuy?oiid=" + oiid;
     }
 
     @RequestMapping("forebuy")
@@ -354,6 +354,7 @@ public class ForeController {
 
         User user = (User) session.getAttribute("user");
 
+        //排除已删除的订单
         List<Order> orderList = orderService.list(user.getId(), OrderService.delete);
         //填充订单
         orderItemService.fill(orderList);
