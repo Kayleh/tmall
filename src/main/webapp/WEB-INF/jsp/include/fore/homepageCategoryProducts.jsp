@@ -11,14 +11,15 @@
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" isELIgnored="false" %>
-<%--&lt;%&ndash;限制数量&ndash;%&gt;--%>
-<%--<c:if test="${empty param.categorycount}">--%>
-<%--    <c:set var="categorycount" scope="page" value="100"/>--%>
-<%--</c:if>--%>
 
-<%--<c:if test="${!empty param.categorycount}">--%>
-<%--    <c:set var="categorycount" scope="page" value="${param.categorycount}"/>--%>
-<%--</c:if>--%>
+<%--限制数量--%>
+<c:if test="${empty param.categorycount}">
+    <c:set var="categorycount" scope="page" value="100"/>
+</c:if>
+
+<c:if test="${!empty param.categorycount}">
+    <c:set var="categorycount" scope="page" value="${param.categorycount}"/>
+</c:if>
 
 
 <div class="homepageCategoryProducts">

@@ -58,7 +58,8 @@
                 </span>
                 <input id="password" name="password" type="password" placeholder="密码" type="text">
             </div>
-            <span class="text-danger">不要输入真实的天猫账号密码</span><br><br>
+
+<%--            <span class="text-danger">不要输入真实的天猫账号密码</span><br><br>--%>
 
             <div>
                 <a class="notImplementLink" href="#nowhere">忘记登录密码</a>
