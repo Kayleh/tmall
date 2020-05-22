@@ -7,7 +7,7 @@ import java.util.Comparator;
 /**
  * @Author: Wizard
  * @Date: 2020/5/8 11:27
- *                      把 价格低的放前面
+ * 把 价格低的放前面
  */
 public class ProductSaleCountComparator implements Comparator<Product> {
     @Override
